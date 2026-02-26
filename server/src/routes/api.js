@@ -1,20 +1,22 @@
 import express from 'express'
 const router = express.Router()
-import {AuthMiddleware} from "../middlewares/AuthMiddleware.js";
-
-import * as adminController from "../controllers/AdminController.js";
-import {sentOTP} from "../controllers/otpController.js";
-
+import productRoutes from "./productRoutes.js";
+import adminRouter from "./adminRoutes.js";
+import categoryRoutes from "./categoryRoutes.js";
 
 
 
 
-// user API
-router.post('/sentOtp', sentOTP)
-router.post('/Register',adminController.adminRegister)
-router.post('/Login',adminController.adminLogin)
-router.get('verifyOtp', adminController.verifyOtp)
-router.post('/LogOut',AuthMiddleware,adminController.adminLogOut)
+
+// admin routes
+router.use("/admin", adminRouter)
+
+// category routes
+router.use("/categories", categoryRoutes)
+
+// product routes
+router.use("/products", productRoutes)
+
 
 
 

@@ -11,7 +11,7 @@ export const AuthMiddleware = (req, res, next) => {
     }
 
     // token Decoded
-    let decoded = DecodedToken(token) 
+    let decoded = DecodedToken(token)
     if(decoded === null) {
         return res.status(401).json({message : 'Unauthorized'})
     }

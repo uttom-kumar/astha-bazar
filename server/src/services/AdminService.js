@@ -18,14 +18,14 @@ export const adminCreateService = async (req) => {
         if(user){
             return {
                 status : "failed",
-                message : "Email already exists"
+                msg : "Email already exists"
             }
         }
 
         if(reqBody.password.length < 8){
             return {
                 status : "failed",
-                message : "Password must be at least 8 characters"
+                msg : "Password must be at least 8 characters"
             }
         }
 
@@ -40,7 +40,7 @@ export const adminCreateService = async (req) => {
         const data = await AdminModel.create(reqBody)
         return {
             status : "success",
-            message : "User registration successfully!",
+            msg : "User registration successfully!",
             data: data
         }
       
@@ -48,7 +48,7 @@ export const adminCreateService = async (req) => {
     catch (err) {
         return {
             status : "failed",
-            message : "some thing went wrong" ,
+            msg : "some thing went wrong" ,
             error : err.toString()
         }
     }
@@ -60,41 +60,58 @@ export const adminLoginService = async (req, res) => {
 
         let user = await AdminModel.findOne({ email });
         if (!user) {
-            return res.status(404).json({
+            return {
                 status: "failed",
-                message: "User not found",
-            });
+                msg: "User not found",
+            };
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({
+            return {
                 status: "failed",
-                message: "Incorrect password",
-            });
+                msg: "Incorrect password",
+            };
         }
 
         // Generate 6 digit OTP
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // Save OTP in DB
+        const EmailTo = email;
+        const EmailText = `${otpCode}`;
+        const EmailSubject = `Email Verification Code`;
+
+        await EmailSend(EmailTo, EmailText, EmailSubject);
+
+        // 5 minutes expiry
+        const expiryTime = new Date(Date.now() + 5 * 60 * 1000);
+
+        // Hash OTP
+        const salt = await bcrypt.genSalt(10);
+        const hashOTP = await bcrypt.hash(otpCode, salt);
+
+        // Save or Update OTP
         await OtpModel.findOneAndUpdate(
             { email },
-            { email: email, otp: otpCode },
+            {
+                email,
+                otp: hashOTP,
+                expiresAt: expiryTime
+            },
             { upsert: true, new: true }
         );
 
-        return res.status(200).json({
+        return {
             status: "success",
-            message: "OTP sent to email",
-        });
+            msg: "OTP sent to email",
+        };
 
     } catch (err) {
-        return res.status(500).json({
+        return {
             status: "failed",
-            message: "Login failed",
+            msg: "Login failed",
             error: err.message
-        });
+        };
     }
 };
 
@@ -104,11 +121,19 @@ export const verifyOtpService = async (req, res) => {
 
         let otpData = await OtpModel.findOne({ email });
 
-        if (!otpData || otpData.otp !== otp) {
-            return res.status(400).json({
+        if(!otpData){
+            return {
                 status: "failed",
-                message: "Invalid OTP",
-            });
+                msg: "OTP expired or not found",
+            };
+        }
+
+        const otpMatch = await bcrypt.compare(otp, otpData.otp);
+        if (!otpMatch) {
+            return {
+                status: "failed",
+                msg: "Invalid OTP",
+            };
         }
 
         // OTP correct → delete it
@@ -118,26 +143,24 @@ export const verifyOtpService = async (req, res) => {
 
         let token = EncodedToken(user.email, user._id);
 
-        let options = {
+        res.cookie("token", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
             sameSite: "None",
-            secure: true,
+            secure: true
+        });
+
+        return {
+            status: "success",
+            msg: "Login Successfully",
         };
 
-        res.cookie("token", token, options);
-
-        return res.status(200).json({
-            status: "success",
-            message: "Login Successfully",
-        });
-
     } catch (err) {
-        return res.status(500).json({
+        return{
             status: "failed",
-            message: "OTP verification failed",
+            msg: "OTP verification failed",
             error: err.message
-        });
+        };
     }
 };
 
@@ -146,14 +169,44 @@ export const adminLogoutService = async (req, res) => {
         res.clearCookie("token")
         return {
             status : "success",
-            message : "Logged Out Successfully",
+            msg : "Logged Out Successfully",
         }
     }
     catch (err){
         return {
             status : "failed",
-            message : "Failed to Logout",
+            msg : "Failed to Logout",
             error : err.toString()
+        }
+    }
+}
+
+
+export const readProfileService = async (req, res) => {
+    try{
+        const adminID = req.headers.user_id;
+        const existAdmin = await AdminModel.findOne({ _id: adminID });
+
+        if(!existAdmin){
+            return {
+                status : "failed",
+                msg : "User not found",
+            }
+        }
+
+        return {
+            status : "success",
+            msg : "Profile successfully",
+            data : existAdmin
+        }
+
+
+    }
+    catch (error) {
+        return {
+            status : "failed",
+            msg : "Something went wrong",
+            error : error.toString()
         }
     }
 }

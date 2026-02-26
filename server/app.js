@@ -18,7 +18,6 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const {DATABASE, REQUEST_NUMBER, REQUEST_TIME, URL_ENCODE, WEB_CACHE, WEB_JSON_SIZE } = process.env
-console.log(DATABASE)
 
 /* ---- ---- */
 app.use(bodyParser.json())
@@ -51,9 +50,8 @@ app.use(fileUpload({
 /* ------ ------ */
 // TODO : MONGODB/MONGOOSE CONFIGURATION
 let URL = DATABASE
-console.log(URL)
 let OPTION = {
-  user: 'uttomkumar00779', pass: 'JP1d7SDNWwKewdfE1a2dfas',
+  user: '', pass: '',
   autoIndex : true,
 }
 

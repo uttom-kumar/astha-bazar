@@ -18,7 +18,7 @@ export const EmailSend = async (EmailTo, EmailText, EmailSubject) => {
     })
 
     let mailOption = {
-        from : `MERN Ecommerce  ${EMAIL_USER}`,
+        from : `Astha-Bazar ${EMAIL_USER}`,
         to : EmailTo,
         subject : EmailSubject,
         html: `<!DOCTYPE html>
@@ -96,7 +96,7 @@ export const EmailSend = async (EmailTo, EmailText, EmailSubject) => {
 
               <div class="container">
                 <div class="header">
-                  <h1>Welcome to Z-Media Service</h1>
+                  <h1>Welcome to Astha-Bazar Service</h1>
                 </div>
 
                 <div class="content">

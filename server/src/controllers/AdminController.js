@@ -2,7 +2,8 @@ import {
     adminCreateService,
     adminLoginService,
     adminLogoutService,
-    verifyOtpService
+    verifyOtpService,
+    readProfileService
 } from "../services/AdminService.js";
 
 
@@ -25,4 +26,9 @@ export const adminLogOut = async (req, res) => {
     return res.json(result)
 }
 
+
+export const readProfile = async (req, res) => {
+    let result = await readProfileService(req, res);
+    return res.json(result)
+}
 
