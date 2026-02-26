@@ -4,8 +4,6 @@ dotenv.config()
 
 const {PORT} = process.env
 
-
-
 app.listen(PORT, () => {
     console.log(`server run successfully at http://localhost:${PORT}/api`)
 })
