@@ -95,7 +95,6 @@ export const createOrderService = async (req) => {
     }
 };
 
-
 export const readOrderService = async () => {
     try {
 
@@ -246,3 +245,44 @@ export const readUserOrdersService = async (req) => {
         };
     }
 };
+
+export const changeOrderService = async (req) => {
+    try{
+        const orderID = req.params.id;
+        const {status} = req.body;
+
+        const orderList = await OrderModel.findOne({_id: orderID});
+
+        if (!orderList) {
+            return {
+                status: "failed",
+                msg: "Order not found"
+            }
+        }
+        // Validate status
+        const validStatuses = ["pending", "process", "shipped", "delivered", "cancel"];
+        if (!validStatuses.includes(status)) {
+            return {
+                status: "failed",
+                msg: `Invalid status. Allowed values: ${validStatuses.join(", ")}`
+            };
+        }
+        const data = await OrderModel.updateOne(
+            {_id : orderID},
+            {status : status}
+        )
+
+        return {
+            status: "success",
+            msg: "Order updated successfully",
+            data: data
+        };
+    }
+    catch (error) {
+        return {
+            status: "failed",
+            msg: "Something went wrong",
+            error: error.toString()
+        }
+    }
+}

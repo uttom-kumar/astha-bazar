@@ -58,7 +58,7 @@ export const updateProductService = async (req) => {
             error : error.toString()
         }
     }
-}
+};
 
 export const readProductService = async (req) => {
     try{
@@ -79,7 +79,7 @@ export const readProductService = async (req) => {
             error : error.toString()
         }
     }
-}
+};
 
 export const deleteProductService = async (req) => {
     try {

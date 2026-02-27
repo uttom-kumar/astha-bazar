@@ -7,6 +7,8 @@ orderRoutes.post("/createOrder", OrderController.createOrder )
 orderRoutes.get("/readOrder", AuthMiddleware,OrderController.readOrder )
 orderRoutes.get("/readUserOrders",OrderController.readUserOrders )
 
+orderRoutes.put("/updateStatus/:id", AuthMiddleware, OrderController.changeOrder)
+
 
 
 export default orderRoutes;

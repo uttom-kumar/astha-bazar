@@ -1,4 +1,9 @@
-import {createOrderService, readOrderService, readUserOrdersService} from "../services/OrderService.js";
+import {
+    changeOrderService,
+    createOrderService,
+    readOrderService,
+    readUserOrdersService
+} from "../services/OrderService.js";
 
 export const createOrder = async (req, res) => {
     let result = await createOrderService(req, res)
@@ -11,5 +16,10 @@ export const readOrder = async (req, res) => {
 }
 export const readUserOrders = async (req, res) => {
     let result = await readUserOrdersService(req, res)
+    return res.json(result)
+}
+
+export const changeOrder = async (req, res) => {
+    let result = await changeOrderService(req, res)
     return res.json(result)
 }
