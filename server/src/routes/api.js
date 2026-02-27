@@ -19,7 +19,7 @@ router.use("/categories", categoryRoutes)
 router.use("/products", productRoutes)
 
 // order routes
-router.use("order", orderRoutes)
+router.use("/order", orderRoutes)
 
 
 

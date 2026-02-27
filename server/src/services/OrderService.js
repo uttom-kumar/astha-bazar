@@ -96,3 +96,38 @@ export const createOrderService = async (req) => {
 };
 
 
+export const orderListService = async () => {
+    try {
+        const data = await OrderModel.aggregate([
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products.productID",
+                    foreignField: "_id",
+                    as: "product",
+                }
+            },
+            {$unwind: "products"},
+        ])
+
+        if (!data) {
+            return {
+                status : "failed",
+                msg : "Data not found"
+            }
+        }
+
+        return {
+            status: 'success',
+            msg: 'Successfully updated product',
+            data : data
+        }
+    }
+    catch (error) {
+        return{
+            status : "failed",
+            msg : "Something went wrong",
+            error : error.toString()
+        }
+    }
+}
