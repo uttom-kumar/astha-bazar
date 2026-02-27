@@ -156,3 +156,16 @@ export const readSingleProductService = async (req) => {
         }
     }
 }
+
+export const createProductImageService = async (req) => {
+    try{
+        const productID = new ObjectId(req.params.id);
+    }
+    catch (error) {
+        return{
+            status : "failed",
+            msg : "Something went wrong",
+            error : error.toString()
+        }
+    }
+}

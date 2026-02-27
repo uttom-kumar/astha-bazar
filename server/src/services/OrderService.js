@@ -96,38 +96,153 @@ export const createOrderService = async (req) => {
 };
 
 
-export const orderListService = async () => {
+export const readOrderService = async () => {
     try {
+
         const data = await OrderModel.aggregate([
+
+            //Unwind products array
+            {
+                $unwind: "$products"
+            },
+
+            //Lookup product details
             {
                 $lookup: {
-                    from: "products",
-                    localField: "products.productID",
+                    from: "products", // collection name
+                    localField: "products.productId",
                     foreignField: "_id",
-                    as: "product",
+                    as: "productDetails"
                 }
             },
-            {$unwind: "products"},
-        ])
 
-        if (!data) {
-            return {
-                status : "failed",
-                msg : "Data not found"
+            //Convert productDetails array to object
+            {
+                $unwind: "$productDetails"
+            },
+
+            //Optional clean response
+            {
+                $project: {
+                    customerName: 1,
+                    phone: 1,
+                    address: 1,
+                    status: 1,
+                    deliveryArea: 1,
+                    deliveryFee: 1,
+                    totalAmount: 1,
+
+                    quantity: "$products.quantity",
+
+                    productName: "$productDetails.name",
+                    productPrice: "$productDetails.price",
+                    productDiscountPrice: "$productDetails.discountPrice"
+                }
             }
+
+        ]);
+
+        if (data.length === 0) {
+            return {
+                status: "failed",
+                msg: "No orders found"
+            };
         }
 
         return {
-            status: 'success',
-            msg: 'Successfully updated product',
-            data : data
-        }
+            status: "success",
+            msg: "Orders fetched successfully",
+            data: data
+        };
+
+    } catch (error) {
+        return {
+            status: "failed",
+            msg: "Something went wrong",
+            error: error.message
+        };
     }
-    catch (error) {
-        return{
-            status : "failed",
-            msg : "Something went wrong",
-            error : error.toString()
+};
+
+export const readUserOrdersService = async (req) => {
+    try {
+
+        const { phone } = req.body;
+
+        if (!phone) {
+            return {
+                status: "failed",
+                msg: "Phone number is required"
+            };
         }
+
+        const data = await OrderModel.aggregate([
+
+            // 1️⃣ Match user phone
+            {
+                $match: { phone: phone }
+            },
+
+            // 2️⃣ Unwind products array
+            {
+                $unwind: "$products"
+            },
+
+            // 3️⃣ Lookup product details
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products.productId",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+
+            // 4️⃣ Convert array to object
+            {
+                $unwind: "$productDetails"
+            },
+
+            // 5️⃣ Clean response
+            {
+                $project: {
+                    customerName: 1,
+                    phone: 1,
+                    address: 1,
+                    status: 1,
+                    deliveryArea: 1,
+                    deliveryFee: 1,
+                    totalAmount: 1,
+                    createdAt: 1,
+
+                    quantity: "$products.quantity",
+
+                    productName: "$productDetails.name",
+                    productPrice: "$productDetails.price",
+                    productDiscountPrice: "$productDetails.discountPrice"
+                }
+            }
+
+        ]);
+
+        if (data.length === 0) {
+            return {
+                status: "failed",
+                msg: "No orders found"
+            };
+        }
+
+        return {
+            status: "success",
+            msg: "User orders fetched successfully",
+            data
+        };
+
+    } catch (error) {
+        return {
+            status: "failed",
+            msg: "Something went wrong",
+            error: error.message
+        };
     }
-}
+};
