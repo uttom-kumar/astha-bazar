@@ -3,7 +3,7 @@ import {
     readProductService,
     updateProductService,
     deleteProductService,
-    readSingleProductService
+    readSingleProductService, createProductImageService, updateProductImagesService
 } from "../services/ProductService.js";
 
 
@@ -29,6 +29,19 @@ export const readProducts = async (req, res) => {
 
 export const readSingleProduct = async (req, res) => {
     let result = await readSingleProductService(req);
+    return res.json(result);
+}
+
+
+export const createProductImage = async (req, res) => {
+    let result = await createProductImageService(req);
+    return res.json(result);
+}
+
+
+
+export const updateProductImages = async (req, res) => {
+    let result = await updateProductImagesService(req);
     return res.json(result);
 }
 

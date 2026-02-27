@@ -10,6 +10,9 @@ productRoutes.delete("/deleteProduct/:id", AuthMiddleware, productController.del
 productRoutes.get("/", productController.readProducts)
 productRoutes.get("/:id", productController.readSingleProduct)
 
+productRoutes.post("/createProductImage/:id", AuthMiddleware,productController.createProductImage)
+productRoutes.put("/updateProductImages/:id", AuthMiddleware,productController.updateProductImages)
+
 
 
 export default productRoutes;

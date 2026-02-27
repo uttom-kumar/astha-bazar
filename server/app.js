@@ -8,8 +8,10 @@ import hpp from "hpp";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import fileUpload from "express-fileupload";
 
 import router from "./src/routes/api.js";
+import path from "path";
 
 dotenv.config();
 
@@ -23,6 +25,13 @@ const {
     WEB_CACHE,
     WEB_JSON_SIZE,
 } = process.env;
+
+// Enable file upload
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/", // temporary folder for Cloudinary upload
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+}));
 
 /* ================= SECURITY MIDDLEWARE ================= */
 
