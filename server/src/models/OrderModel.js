@@ -30,6 +30,8 @@ const orderSchema = new mongoose.Schema({
     },
 
     trackingId: String,
+    deliveryAddress: { type: String, enum: ["dhaka", "outside"],required: true },
+    deliveryFee : {type: Number, required: true },
     deliveryStatus: {
         type: String,
         enum: ["pending", "shipped", "delivered"],

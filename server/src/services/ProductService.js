@@ -31,7 +31,6 @@ export const CreateProductService = async (req) => {
     }
 };
 
-
 export const updateProductService = async (req) => {
     try{
         const productID = req.params.id;
