@@ -1,15 +1,12 @@
-import { Home, Box, Settings,ShoppingBag,SquarePlus, LogOut } from "lucide-react"
+import { Home, Box, ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import { NavLink } from "react-router-dom"
 import { cn } from "@/lib/utils"
 
 const menus = [
     { name: "Dashboard", icon: Home, path: "/dashboard" },
     { name: "Product list", icon: Box, path: "/dashboard/product-list" },
-    { name: "Add Product", icon: SquarePlus, path: "/dashboard/add-product" },
     { name: "Orders", icon: ShoppingBag, path: "/dashboard/orders" },
-    { name: "Settings", icon: Settings, path: "/dashboard/settings" },
 ]
 
 const DashSideNavbar = ({ open }) => {
@@ -21,13 +18,8 @@ const DashSideNavbar = ({ open }) => {
             )}
         >
 
-            {/* Logo */}
-            <div className="h-14 flex items-center justify-center font-bold text-lg border-b">
-                {open ? "SB Admin" : "SB"}
-            </div>
-
             {/* Menu */}
-            <div className="flex-1 p-3 space-y-2">
+            <div className="flex-1 p-2 space-y-2">
                 {menus.map((menu, i) => {
                     const Icon = menu.icon
 
@@ -50,24 +42,6 @@ const DashSideNavbar = ({ open }) => {
                         </NavLink>
                     )
                 })}
-            </div>
-
-            <Separator />
-
-            {/* Logout */}
-            <div className="p-3">
-                <Button
-                    variant="outline"
-                    className={cn(
-                        "w-full",
-                        open
-                            ? "justify-start gap-3"
-                            : "justify-center"
-                    )}
-                >
-                    <LogOut size={18} />
-                    {open && <span>Logout</span>}
-                </Button>
             </div>
 
         </aside>

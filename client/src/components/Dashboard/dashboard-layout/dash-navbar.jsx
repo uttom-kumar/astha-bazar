@@ -1,10 +1,17 @@
 import { Button } from "@/components/ui/button"
-import { Menu } from "lucide-react"
+import {LogOutIcon, Menu, SettingsIcon, UserIcon} from "lucide-react"
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu.jsx";
+import {Link} from "react-router-dom";
 
 const DashNavbar = ({ toggle }) => {
     return (
@@ -24,10 +31,30 @@ const DashNavbar = ({ toggle }) => {
                     <span className="text-sm text-muted-foreground">Welcome back, Uttom</span>
                 </div>
                 {/* Right */}
-                <Avatar className="cursor-pointer">
-                    <AvatarImage src="" />
-                    <AvatarFallback>UK</AvatarFallback>
-                </Avatar>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Avatar className="cursor-pointer">
+                            <AvatarImage src="" />
+                            <AvatarFallback>UK</AvatarFallback>
+                        </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuGroup>
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                                <Link to={"/dashboard/profile"} className={"flex items-center gap-2"}>
+                                    <UserIcon size={20}/> Profile
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <SettingsIcon size={20}/> Settings
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <LogOutIcon size={20}/> Logout
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </header>
     )
