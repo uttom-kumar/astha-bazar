@@ -9,9 +9,9 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
+import mongoSanitize from 'express-mongo-sanitize'
 
 import router from "./src/routes/api.js";
-import path from "path";
 
 dotenv.config();
 
@@ -37,7 +37,7 @@ app.use(fileUpload({
 
 // Secure HTTP headers
 app.use(helmet());
-
+app.use(mongoSanitize())
 // Prevent HTTP parameter pollution
 app.use(hpp());
 
@@ -66,12 +66,15 @@ app.use(
 /* ================= RATE LIMIT ================= */
 
 const limiter = rateLimit({
-    windowMs: parseInt(REQUEST_TIME) || 15 * 60 * 1000, // 15 min default
-    max: parseInt(REQUEST_NUMBER) || 100, // 100 requests default
+    windowMs: parseInt(process.env.REQUEST_TIME) || 15 * 60 * 1000,
+    max: parseInt(process.env.REQUEST_NUMBER) || 100,
     standardHeaders: true,
     legacyHeaders: false,
+    message: {
+        status: "failed",
+        message: "Too many requests. Please try again later."
+    }
 });
-
 app.use(limiter);
 
 /* ================= CACHE ================= */

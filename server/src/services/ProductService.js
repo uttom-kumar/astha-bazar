@@ -2,11 +2,11 @@ import ProductModel from "../models/ProductModel.js";
 import mongoose from "mongoose";
 import ProductImages from "../models/ProductImages.js";
 const ObjectId = mongoose.Types.ObjectId;
-import cloudinary from "../utility/cloudinaryConfig.js";
+import cloudinary from "../config/cloudinaryConfig.js";
 
 export const CreateProductService = async (req) => {
     try {
-        const { categoryID, name, price, description } = req.body;
+        const { categoryID, name, price, description, discountPrice } = req.body;
 
         if (!categoryID || !name || !price || !description) {
             return{
@@ -20,6 +20,7 @@ export const CreateProductService = async (req) => {
             categoryID,
             name,
             price,
+            discountPrice,
             description,
         });
 
